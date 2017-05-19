@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const parseAcLog_1 = require("./parseAcLog");
 let apiVer = '<CMD><APIVER></CMD>\r\n';
-let list = '<CMD><LIST></CMD>\r\n';
+let list = '<CMD><LIST><INCLUDEALL></CMD>\r\n';
 var net = require('net');
 var parser = require('./parseAcLog');
 var client = new net.Socket();
@@ -15,8 +15,10 @@ client.on('data', (data) => {
     let rc = parseAcLog_1.ParseAcLog.fillBuf(data);
     if (rc) {
         let list = parseAcLog_1.ParseAcLog.parseList();
+        let i = 1;
         for (let cmd of list) {
-            console.log(cmd);
+            console.log(i + ": " + cmd);
+            i++;
         }
     }
 });

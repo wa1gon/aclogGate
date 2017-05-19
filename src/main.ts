@@ -8,7 +8,7 @@ Save the following server in example.js:
 
 */
 let apiVer = '<CMD><APIVER></CMD>\r\n';
-let list = '<CMD><LIST></CMD>\r\n';
+let list = '<CMD><LIST><INCLUDEALL></CMD>\r\n';
 var net = require('net');
 var parser = require('./parseAcLog');
 
@@ -23,8 +23,10 @@ client.on('data', (data: Buffer) => {
     let rc = ParseAcLog.fillBuf(data);
     if (rc) {
         let list = ParseAcLog.parseList();
+        let i = 1;
         for (let cmd of list) {
-            console.log(cmd);
+            console.log(i + ": " + cmd);
+            i++;
         }
     }
 });
