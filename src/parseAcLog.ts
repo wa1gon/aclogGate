@@ -11,7 +11,7 @@ export class ParseAcLog {
         }
         return false;
     }
-    public static parseList(): Array<string> {
+    public static splitList(): Array<string> {
 
         let arr = ParseAcLog.buffer.split("</CMD><CMD>");
         let rcArray = new Array<string>();

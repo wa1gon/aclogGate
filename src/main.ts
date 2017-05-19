@@ -22,7 +22,7 @@ client.connect(1100, '127.0.0.1', function () {
 client.on('data', (data: Buffer) => {
     let rc = ParseAcLog.fillBuf(data);
     if (rc) {
-        let list = ParseAcLog.parseList();
+        let list = ParseAcLog.splitList();
         let i = 1;
         for (let cmd of list) {
             console.log(i + ": " + cmd);
