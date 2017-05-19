@@ -1,0 +1,23 @@
+{
+  "name": "acloggate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wa1gon/aclogGate.git"
+  },
+  "author": "Darryl Wagoner WA1GON",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wa1gon/aclogGate/issues"
+  },
+  "homepage": "https://github.com/wa1gon/aclogGate#readme",
+  "devDependencies": {
+    "@types/node": "^7.0.18",
+    "mocha": "^3.4.1"
+  }
+}
