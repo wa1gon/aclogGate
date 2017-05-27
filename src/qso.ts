@@ -1,4 +1,5 @@
 export class Qso {
+    aclogType: string;
     address: string;
     age: number;
     arrlSect: string;
