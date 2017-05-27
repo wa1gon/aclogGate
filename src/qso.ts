@@ -16,6 +16,9 @@ export class Qso {
     jota: string;
     ituz: number;
     mode: string;
+    modeTestACLog: string;
+    prefixACLog: string;
+    countryWorkedACLog: string;
     name: string;
     notes: string;
     operator: string;

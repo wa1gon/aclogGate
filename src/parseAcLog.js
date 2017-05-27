@@ -36,7 +36,8 @@ class ParseAcLog {
         let recType = input.elements[0].elements[0].name;
         switch (recType) {
             case 'LISTRESPONSE':
-                this.transformListResponse(input);
+                let rc = this.transformListResponse(input);
+                return rc;
         }
     }
     transformListResponse(input) {
@@ -53,7 +54,53 @@ class ParseAcLog {
                     case 'DATE':
                         qso.qso_date = new Date(elem.elements[0].text);
                         break;
+                    case 'TIMEON':
+                        qso.time_on = elem.elements[0].text;
+                        break;
+                    case 'BAND':
+                        qso.band = elem.elements[0].text;
+                        break;
+                    case 'MODE':
+                        qso.mode = elem.elements[0].text;
+                        break;
+                    case 'MODETEST':
+                        qso.modeTestACLog = elem.elements[0].text;
+                        break;
+                    case 'CONTINENT':
+                        qso.cont = elem.elements[0].text;
+                        break;
+                    case 'COUNTRYWORKED':
+                        qso.countryWorkedACLog = elem.elements[0].text;
+                        break;
+                    case 'FLDCOUNTRYDXCC':
+                        qso.dxcc = elem.elements[0].text;
+                        break;
+                    case 'CQZONE':
+                        qso.cqz = elem.elements[0].text;
+                        break;
+                    case 'FREQUENCY':
+                        qso.freq = elem.elements[0].text;
+                        break;
+                    case 'ITUZ':
+                        qso.ituz = elem.elements[0].text;
+                        break;
+                    case 'PREFIX':
+                        qso.prefixACLog = elem.elements[0].text;
+                        break;
+                    case 'TIMEOFF':
+                        qso.time_off = elem.elements[0].text;
+                        break;
+                    case 'FLDOPERATOR':
+                        qso.operator = elem.elements[0].text;
+                        break;
+                    case 'FLDQSLR':
+                        qso.qsl_rcvd = elem.elements[0].text;
+                        break;
+                    case 'FLDQSLS':
+                        qso.qsl_sent = elem.elements[0].text;
+                        break;
                     default:
+                        console.log("Field: " + elem.name + " Not used");
                 }
             }
         }

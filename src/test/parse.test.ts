@@ -20,7 +20,7 @@ describe("parseResp", function () {
 
         let json = parse.parseResp(cmd);
         console.log(json);
-        console.log(json.element);
+
         should.exist(json);
     })
 })

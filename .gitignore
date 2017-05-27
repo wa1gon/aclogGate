@@ -1,5 +1,6 @@
 
 src/*.js
+src/*.js.map
 
 
 # Node.js Tools for Visual Studio
