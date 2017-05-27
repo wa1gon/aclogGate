@@ -1,0 +1,224 @@
+{
+    "elements": [
+        {
+            "type": "element",
+            "name": "CMD",
+            "elements": [
+                {
+                    "type": "element",
+                    "name": "LISTRESPONSE"
+                },
+                {
+                    "type": "element",
+                    "name": "CALL",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "KE4BZJ"
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "DATE",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "2016/02/25"
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "TIMEON",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "16:17"
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "BAND",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "20"
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "MODE",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "SSB"
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "MODETEST",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "PH"
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "CONTINENT",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "NA"
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "COUNTRYWORKED",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "USA"
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "FLDCOUNTRYDXCC",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "291"
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "CQZONE",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "05"
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "FREQUENCY",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "14.24400"
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "ITUZ",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "08"
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "PREFIX",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "KE4"
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "SPCNUM",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "USA"
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "TIMEOFF",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "16:17"
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "FLDINITIALS",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "DPW"
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "FLDOPERATOR",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "WA1GON"
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "FLDQSLR",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "N"
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "FLDQSLS",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "N"
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "FLDSTATION",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "DAX"
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "name": "FLDPRIMARYKEY",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "1"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

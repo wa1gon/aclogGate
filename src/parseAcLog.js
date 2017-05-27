@@ -1,20 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 let convert = require("xml-js");
+const qso_1 = require("./qso");
 class ParseAcLog {
     constructor() { }
-    static fillBuf(data) {
+    fillBuf(data) {
         let databuf = data.toString();
-        ParseAcLog.buffer = ParseAcLog.buffer + databuf;
-        if (ParseAcLog.buffer.indexOf("\r\n")) {
+        this.buffer = this.buffer + databuf;
+        if (this.buffer.indexOf("\r\n")) {
             console.log("found end");
             return true;
         }
         return false;
     }
-    static splitList() {
+    splitList() {
         var r = new RegExp(/<\/CMD>/, 'g');
-        let buf = ParseAcLog.buffer.replace(r, "</CMD>\r");
+        let buf = this.buffer.replace(r, "</CMD>\r");
         let arr = buf.split("\r");
         console.log("arr length: " + arr.length);
         let rcArray = new Array();
@@ -23,20 +24,48 @@ class ParseAcLog {
         }
         return rcArray;
     }
-    static parseResp(cmd) {
-        let gt = cmd.indexOf(">");
-        let tag = cmd.substr(1, gt - 1);
-        let xml = cmd.substr(gt + 1);
-        this.fixCmdOptTag(xml);
-        var result = convert.xml2json(xml, { compact: false, space: 4 });
+    parseResp(cmd) {
+        console.log("top of parseResp");
+        let cmdTag = this.fixCmdOptTag(cmd);
+        console.log(this.xml);
+        var result = convert.xml2js(this.xml, { compact: false, space: 4 });
+        let rc = this.transform(result);
+        return rc;
     }
-    static fixCmdOptTag(xml) {
-        let cmd = xml.replace('<CMD><', "");
+    transform(input) {
+        let recType = input.elements[0].elements[0].name;
+        switch (recType) {
+            case 'LISTRESPONSE':
+                this.transformListResponse(input);
+        }
+    }
+    transformListResponse(input) {
+        let qso = new qso_1.Qso();
+        for (let elem of input.elements[0].elements) {
+            if (elem.name && elem.type == 'element') {
+                switch (elem.name) {
+                    case 'LISTRESPONSE':
+                        qso.aclogType = elem.name;
+                        break;
+                    case 'CALL':
+                        qso.call = elem.elements[0].text;
+                        break;
+                    case 'DATE':
+                        qso.qso_date = new Date(elem.elements[0].text);
+                        break;
+                    default:
+                }
+            }
+        }
+        return qso;
+    }
+    fixCmdOptTag(acXml) {
+        let cmd = acXml.replace('<CMD><', "");
         let loc = cmd.indexOf('>');
         let rc = cmd.substr(0, loc);
         let oldstr = "<" + rc + ">";
         let newstr = "<" + rc + "/>";
-        xml = xml.replace(oldstr, newstr);
+        this.xml = acXml.replace(oldstr, newstr);
         return rc;
     }
 }
