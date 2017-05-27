@@ -12,8 +12,9 @@ let list = '<CMD><LIST><INCLUDEALL></CMD>\r\n';
 var net = require('net');
 var parser = require('./parseAcLog');
 
+
 var client = new net.Socket();
-client.connect(1100, '127.0.0.1', function () {
+client.connect(1100, '192.168.1.103', function () {
     ParseAcLog.buffer = "";
     console.log('Connected');
     client.write(list);
@@ -26,8 +27,10 @@ client.on('data', (data: Buffer) => {
         let i = 1;
         for (let cmd of list) {
             console.log(i + ": " + cmd);
+            //let item = ParseAcLog.parseResp(cmd);
             i++;
         }
+        ParseAcLog.buffer = "";
     }
 });
 
