@@ -1,5 +1,6 @@
 let convert = require("xml-js");
 import { Qso } from "./qso";
+import { RadioBMF } from "./radioBMF";
 
 
 export class ParseAcLog {
@@ -27,11 +28,8 @@ export class ParseAcLog {
         return rcArray;
     }
     public parseResp(cmd: string): any {
-        // cmd = cmd.replace("<CMD>", "");
-        // cmd = cmd.replace("</CMD>", "");
-        console.log("top of parseResp");
+
         let cmdTag = this.fixCmdOptTag(cmd);
-        console.log(this.xml);
         var result = convert.xml2js(this.xml, { compact: false, space: 4 });
 
         let rc = this.transform(result);
@@ -45,6 +43,36 @@ export class ParseAcLog {
             case 'LISTRESPONSE':
                 let rc = this.transformListResponse(input);
                 return rc;
+            case 'READBMFRESPONSE':
+                rc = this.transformReadBMF(input);
+                return rc;
+        }
+    }
+    public transformReadBMF(input) {
+        let radio = new RadioBMF();
+        for (let elem of input.elements[0].elements) {
+            if (elem.name && elem.type == 'element') {
+                switch (elem.name) {
+                    case 'READBMFRESPONSE':
+                        radio.aclogType = elem.name;
+                        break;
+                    case 'BAND':
+                        radio.band = elem.elements[0].text;
+                        break;
+                    case 'MODE':
+                        radio.mode = elem.elements[0].text;
+                        break;
+                    case 'MODETEST':
+                        radio.modeTest = elem.elements[0].text;
+                        break;  
+                    case "FREQ":
+                        let tmpFreq = parseFloat(elem.elements[0].text);
+                        if (tmpFreq != NaN) {
+                            radio.freq = tmpFreq;
+                        }
+                        break;
+                }
+            }
         }
     }
     public transformListResponse(input): Qso {
@@ -107,7 +135,7 @@ export class ParseAcLog {
                         qso.qsl_sent = elem.elements[0].text;
                         break;                         
                     default:
-                        console.log("Field: " + elem.name + " Not used");    
+                        //console.log("Field: " + elem.name + " Not used");    
 
                 }
             }

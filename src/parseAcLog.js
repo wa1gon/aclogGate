@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 let convert = require("xml-js");
 const qso_1 = require("./qso");
+const radioBMF_1 = require("./radioBMF");
 class ParseAcLog {
     constructor() { }
     fillBuf(data) {
@@ -25,9 +26,7 @@ class ParseAcLog {
         return rcArray;
     }
     parseResp(cmd) {
-        console.log("top of parseResp");
         let cmdTag = this.fixCmdOptTag(cmd);
-        console.log(this.xml);
         var result = convert.xml2js(this.xml, { compact: false, space: 4 });
         let rc = this.transform(result);
         return rc;
@@ -38,6 +37,36 @@ class ParseAcLog {
             case 'LISTRESPONSE':
                 let rc = this.transformListResponse(input);
                 return rc;
+            case 'READBMFRESPONSE':
+                rc = this.transformReadBMF(input);
+                return rc;
+        }
+    }
+    transformReadBMF(input) {
+        let radio = new radioBMF_1.RadioBMF();
+        for (let elem of input.elements[0].elements) {
+            if (elem.name && elem.type == 'element') {
+                switch (elem.name) {
+                    case 'READBMFRESPONSE':
+                        radio.aclogType = elem.name;
+                        break;
+                    case 'BAND':
+                        radio.band = elem.elements[0].text;
+                        break;
+                    case 'MODE':
+                        radio.mode = elem.elements[0].text;
+                        break;
+                    case 'MODETEST':
+                        radio.modeTest = elem.elements[0].text;
+                        break;
+                    case "FREQ":
+                        let tmpFreq = parseFloat(elem.elements[0].text);
+                        if (tmpFreq != NaN) {
+                            radio.freq = tmpFreq;
+                        }
+                        break;
+                }
+            }
         }
     }
     transformListResponse(input) {
@@ -100,7 +129,6 @@ class ParseAcLog {
                         qso.qsl_sent = elem.elements[0].text;
                         break;
                     default:
-                        console.log("Field: " + elem.name + " Not used");
                 }
             }
         }

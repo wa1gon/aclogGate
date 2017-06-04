@@ -1,7 +1,7 @@
 import { ParseAcLog } from '../parseAcLog';
 var assert = require('assert');
 var parse = require('../parseAcLog');
-var mocha = require('should');
+var should = require('chai').should();
 
 var cmd = '<CMD><LISTRESPONSE><CALL>KE4BZJ</CALL><DATE>2016/02/25</DATE>' +
     '<TIMEON>16:17</TIMEON><BAND>20</BAND><MODE>SSB</MODE><MODETEST>PH</MODETEST>' +
@@ -11,16 +11,40 @@ var cmd = '<CMD><LISTRESPONSE><CALL>KE4BZJ</CALL><DATE>2016/02/25</DATE>' +
     '<TIMEOFF>16:17</TIMEOFF><FLDINITIALS>DPW</FLDINITIALS>' +
     '<FLDOPERATOR>WA1GON</FLDOPERATOR><FLDQSLR>N</FLDQSLR><FLDQSLS>N</FLDQSLS>' +
     '<FLDSTATION>DAX</FLDSTATION><FLDPRIMARYKEY>1</FLDPRIMARYKEY></CMD>';
+
+
 describe("parseResp", function () {
+    it('should create a json object', function () {
+        let parse = new ParseAcLog();
+        let qso = parse.parseResp(cmd);
+
+        should.exist(qso);
+    })
+    it('should read call sign of KE4BZJ', function () {
+        let parse = new ParseAcLog();
+        let qso = parse.parseResp(cmd);
+
+        qso.call.should.equal("KE4BZJ");
+    })
+    it('should read qso date of 2016/02/25', function () {
+        let parse = new ParseAcLog();
+        let qso = parse.parseResp(cmd);
+
+        qso.qso_date.toString().should.equal(new Date("2016/02/25").toString());
+    })
+    it('should read qso timeon of 16:10 ', function () {
+        let parse = new ParseAcLog();
+        let qso = parse.parseResp(cmd);
+        qso.time_on.should.equal("16:17");
+    })
+    
+})
+describe("fixCmdOptTag", function () {
     it('should create a json object', function () {
         let parse = new ParseAcLog();
         let cmdOpt = parse.fixCmdOptTag(cmd);
 
         cmdOpt.should.equal('LISTRESPONSE');
 
-        let json = parse.parseResp(cmd);
-        console.log(json);
-
-        should.exist(json);
     })
 })
