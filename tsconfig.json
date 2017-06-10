@@ -1,12 +1,12 @@
 {
-  "compileOnSave": false,
+  "compileOnSave": true,
   "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "src",
+
+    "outDir": "lib",
     "sourceMap": true,
     "target": "es6",
-    "module": "CommonJS",
-    "declaration": false,
+    "module": "commonjs",
+    "declaration": true,
     "noImplicitAny": false,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -30,6 +30,9 @@
     "./typings/index.d.ts",
     "./custom_typings/**/*.d.ts",
     "./jspm_packages/**/*.d.ts"
+  ],
+  "include": [
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",

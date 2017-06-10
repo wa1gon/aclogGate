@@ -1,7 +1,9 @@
 
-src/**/*.js
-src/**/*.js.map
-
+server/**/*.js
+server/**/*.js.map
+client/**/*.js
+client/**/*.js.map
+dist
 
 # Node.js Tools for Visual Studio
 

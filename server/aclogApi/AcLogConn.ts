@@ -3,15 +3,17 @@ import { ParseAcLog } from './parseAcLog';
 export class AcLogConn {
     public port: number;
     public host: string;
+    private cli
 
     private readonly list = '<CMD><LIST><INCLUDEALL></CMD>\r\n';
 
     public listAllDatabase(callback: (err: string, results: string[]) => any) {
         let acPrase = new ParseAcLog();
+        console.log("host: " + this.host);
 
 
         var client = new net.Socket();
-        client.connect(1100, '192.168.1.103', function () {
+        client.connect(this.port, this.host, function () {
             acPrase.buffer = "";
             client.write(this.list);
         });

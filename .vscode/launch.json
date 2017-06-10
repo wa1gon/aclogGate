@@ -10,10 +10,10 @@
             "request": "launch",
             "name": "Launch Node",
             "protocol":"auto",
-            "program": "${workspaceRoot}/src/main.ts",
+            "program": "${workspaceRoot}/server/build/main.js",
             "sourceMaps": true,
             "outFiles": [
-                "${workspaceRoot}/dist/**/*.js"
+                "${workspaceRoot}/server/build/**/*.js"
             ]
         },
 		{
