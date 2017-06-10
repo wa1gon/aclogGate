@@ -1,12 +1,14 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 let convert = require("xml-js");
-const qso_1 = require("./qso");
-const radioBMF_1 = require("./radioBMF");
-class ParseAcLog {
+import { Qso } from "../qso";
+import { RadioBMF } from "../radioBMF";
+
+
+export class ParseAcLog {
+    public buffer: string;
+    public xml: string;
     constructor() { }
-    fillBuf(data) {
-        let databuf = data.toString();
+    public fillBuf(data: Buffer): boolean {
+        let databuf = data.toString()
         this.buffer = this.buffer + databuf;
         if (this.buffer.indexOf("\r\n")) {
             console.log("found end");
@@ -14,36 +16,40 @@ class ParseAcLog {
         }
         return false;
     }
-    splitList() {
+    public splitList(): Array<string> {
         var r = new RegExp(/<\/CMD>/, 'g');
-        let buf = this.buffer.replace(r, "</CMD>\r");
+        let buf = this.buffer.replace(r, "</CMD>\r")
         let arr = buf.split("\r");
         console.log("arr length: " + arr.length);
-        let rcArray = new Array();
+        let rcArray = new Array<string>();
         for (let cmd of arr) {
             rcArray.push(cmd);
         }
         return rcArray;
     }
-    parseResp(cmd) {
+    public parseResp(cmd: string): any {
+
         let cmdTag = this.fixCmdOptTag(cmd);
         var result = convert.xml2js(this.xml, { compact: false, space: 4 });
+
         let rc = this.transform(result);
+
         return rc;
+
     }
-    transform(input) {
+    public transform(input: any): any {
         let recType = input.elements[0].elements[0].name;
         switch (recType) {
             case 'LISTRESPONSE':
-                let rc = this.transformListResponse(input);
-                return rc;
+                let qso = this.transformListResponse(input);
+                return qso;
             case 'READBMFRESPONSE':
-                rc = this.transformReadBMF(input);
-                return rc;
+                let radioInfo = this.transformReadBMF(input);
+                return radioInfo;
         }
     }
-    transformReadBMF(input) {
-        let radio = new radioBMF_1.RadioBMF();
+    public transformReadBMF(input) {
+        let radio = new RadioBMF();
         for (let elem of input.elements[0].elements) {
             if (elem.name && elem.type == 'element') {
                 switch (elem.name) {
@@ -58,7 +64,7 @@ class ParseAcLog {
                         break;
                     case 'MODETEST':
                         radio.modeTest = elem.elements[0].text;
-                        break;
+                        break;  
                     case "FREQ":
                         let tmpFreq = parseFloat(elem.elements[0].text);
                         if (tmpFreq != NaN) {
@@ -69,8 +75,8 @@ class ParseAcLog {
             }
         }
     }
-    transformListResponse(input) {
-        let qso = new qso_1.Qso();
+    public transformListResponse(input): Qso {
+        let qso = new Qso();
         for (let elem of input.elements[0].elements) {
             if (elem.name && elem.type == 'element') {
                 switch (elem.name) {
@@ -92,7 +98,7 @@ class ParseAcLog {
                     case 'MODE':
                         qso.mode = elem.elements[0].text;
                         break;
-                    case 'MODETEST':
+                     case 'MODETEST':
                         qso.modeTestACLog = elem.elements[0].text;
                         break;
                     case 'CONTINENT':
@@ -100,11 +106,11 @@ class ParseAcLog {
                         break;
                     case 'COUNTRYWORKED':
                         qso.countryWorkedACLog = elem.elements[0].text;
-                        break;
+                        break;  
                     case 'FLDCOUNTRYDXCC':
                         qso.dxcc = elem.elements[0].text;
                         break;
-                    case 'CQZONE':
+                     case 'CQZONE':
                         qso.cqz = elem.elements[0].text;
                         break;
                     case 'FREQUENCY':
@@ -112,14 +118,14 @@ class ParseAcLog {
                         break;
                     case 'ITUZ':
                         qso.ituz = elem.elements[0].text;
-                        break;
+                        break;  
                     case 'PREFIX':
                         qso.prefixACLog = elem.elements[0].text;
-                        break;
+                        break;  
                     case 'TIMEOFF':
                         qso.time_off = elem.elements[0].text;
                         break;
-                    case 'FLDOPERATOR':
+                     case 'FLDOPERATOR':
                         qso.operator = elem.elements[0].text;
                         break;
                     case 'FLDQSLR':
@@ -127,14 +133,18 @@ class ParseAcLog {
                         break;
                     case 'FLDQSLS':
                         qso.qsl_sent = elem.elements[0].text;
-                        break;
+                        break;                         
                     default:
+                        //console.log("Field: " + elem.name + " Not used");    
+
                 }
             }
         }
+
         return qso;
     }
-    fixCmdOptTag(acXml) {
+    public fixCmdOptTag(acXml: string): string {
+
         let cmd = acXml.replace('<CMD><', "");
         let loc = cmd.indexOf('>');
         let rc = cmd.substr(0, loc);
@@ -144,5 +154,3 @@ class ParseAcLog {
         return rc;
     }
 }
-exports.ParseAcLog = ParseAcLog;
-//# sourceMappingURL=parseAcLog.js.map

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const parseAcLog_1 = require("../parseAcLog");
+const parseAcLog_1 = require("../aclogApi/parseAcLog");
 var assert = require('assert');
 var parse = require('../parseAcLog');
 var should = require('chai').should();

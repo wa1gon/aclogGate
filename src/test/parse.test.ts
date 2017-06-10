@@ -1,4 +1,4 @@
-import { ParseAcLog } from '../parseAcLog';
+import { ParseAcLog } from '../aclogApi/parseAcLog';
 var assert = require('assert');
 var parse = require('../parseAcLog');
 var should = require('chai').should();
@@ -37,7 +37,7 @@ describe("parseResp", function () {
         let qso = parse.parseResp(cmd);
         qso.time_on.should.equal("16:17");
     })
-    
+
 })
 describe("fixCmdOptTag", function () {
     it('should create a json object', function () {
