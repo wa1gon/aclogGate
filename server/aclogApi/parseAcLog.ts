@@ -1,6 +1,6 @@
 let convert = require("xml-js");
 import { Qso } from "../qso";
-import { RadioBMF } from "../radioBMF";
+import { RadioBMF } from "./radioBMF";
 
 
 export class ParseAcLog {
