@@ -1,13 +1,17 @@
 import { AcLogConn } from './aclogApi/AcLogConn';
 var express = require('express');
+var bodyParser = require('body-parser');
 let port = process.env.PORT || 3000;
 let app = express();
+
+app.use(bodyParser.json);
 
 let acConn = new AcLogConn();
 acConn.port = 1100;
 acConn.host = "192.168.1.101";
+acConn.open();
 console.log("top of main");
-
+// error example: res.status(500).send(err)
 app.get('/',(req, res) => {
     res.send("welcome to loggate!");
 });

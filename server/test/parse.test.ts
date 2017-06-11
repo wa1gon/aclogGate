@@ -1,6 +1,5 @@
 import { ParseAcLog } from '../aclogApi/parseAcLog';
 var assert = require('assert');
-var parse = require('../parseAcLog');
 var should = require('chai').should();
 
 var cmd = '<CMD><LISTRESPONSE><CALL>KE4BZJ</CALL><DATE>2016/02/25</DATE>' +
