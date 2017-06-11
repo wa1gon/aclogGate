@@ -3,24 +3,25 @@ import { ParseAcLog } from './parseAcLog';
 export class AcLogConn {
     public port: number;
     public host: string;
-    private cli
+    
 
     private readonly list : string = '<CMD><LIST><INCLUDEALL></CMD>\r\n';
 
+    private clientConn: any = undefined;
+    
+    public open(port: number, host: string) {
+
+    }
     public listAllDatabase(callback: (err: string, results: string[]) => any) {
         let acPrase = new ParseAcLog();
-        console.log("host: " + this.host);
-
-
-        var client = new net.Socket();
-        client.connect(this.port, this.host, () => {
+        var clientSocket = new net.Socket();
+        this.clientConn = clientSocket.connect(this.port, this.host, () => {
             acPrase.buffer = "";
-            console.log("before client write");
-            client.write(this.list);
-            console.log("after client write");
+            //client.write(this.list);
+
         });
 
-        client.on('data', (data: Buffer) => {
+        clientSocket.on('data', (data: Buffer) => {
             console.log("top of client on");
             let rc = acPrase.fillBuf(data);
             if (rc) {
