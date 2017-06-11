@@ -5,7 +5,7 @@ export class AcLogConn {
     public host: string;
     private cli
 
-    private readonly list = '<CMD><LIST><INCLUDEALL></CMD>\r\n';
+    private readonly list : string = '<CMD><LIST><INCLUDEALL></CMD>\r\n';
 
     public listAllDatabase(callback: (err: string, results: string[]) => any) {
         let acPrase = new ParseAcLog();
@@ -13,12 +13,15 @@ export class AcLogConn {
 
 
         var client = new net.Socket();
-        client.connect(this.port, this.host, function () {
+        client.connect(this.port, this.host, () => {
             acPrase.buffer = "";
+            console.log("before client write");
             client.write(this.list);
+            console.log("after client write");
         });
-        
+
         client.on('data', (data: Buffer) => {
+            console.log("top of client on");
             let rc = acPrase.fillBuf(data);
             if (rc) {
                 let list = acPrase.splitList();
