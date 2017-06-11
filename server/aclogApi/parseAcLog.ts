@@ -12,12 +12,22 @@ export class ParseAcLog {
     public parseResp(cmd: string): any {
 
         let cmdTag = this.fixCmdOptTag(cmd);
-                console.log("cmdTag: " + cmdTag)
+        console.log("cmdTag: " + cmdTag)
         let result = convert.xml2js(this.xml, { compact: false, space: 4 });
         let rc = this.transform(result);
 
         return rc;
 
+    }
+    private fixCmdOptTag(acXml: string): string {
+
+        let cmd = acXml.replace('<CMD><', "");
+        let loc = cmd.indexOf('>');
+        let rc = cmd.substr(0, loc);
+        let oldstr = "<" + rc + ">";
+        let newstr = "<" + rc + "/>";
+        this.xml = acXml.replace(oldstr, newstr);
+        return rc;
     }
     public transform(input: any): any {
         let recType = input.elements[0].elements[0].name;
@@ -47,7 +57,7 @@ export class ParseAcLog {
                         break;
                     case 'MODETEST':
                         radio.modeTest = elem.elements[0].text;
-                        break;  
+                        break;
                     case "FREQ":
                         let tmpFreq = parseFloat(elem.elements[0].text);
                         if (tmpFreq != NaN) {
@@ -81,7 +91,7 @@ export class ParseAcLog {
                     case 'MODE':
                         qso.mode = elem.elements[0].text;
                         break;
-                     case 'MODETEST':
+                    case 'MODETEST':
                         qso.modeTestACLog = elem.elements[0].text;
                         break;
                     case 'CONTINENT':
@@ -89,11 +99,11 @@ export class ParseAcLog {
                         break;
                     case 'COUNTRYWORKED':
                         qso.countryWorkedACLog = elem.elements[0].text;
-                        break;  
+                        break;
                     case 'FLDCOUNTRYDXCC':
                         qso.dxcc = elem.elements[0].text;
                         break;
-                     case 'CQZONE':
+                    case 'CQZONE':
                         qso.cqz = elem.elements[0].text;
                         break;
                     case 'FREQUENCY':
@@ -101,14 +111,14 @@ export class ParseAcLog {
                         break;
                     case 'ITUZ':
                         qso.ituz = elem.elements[0].text;
-                        break;  
+                        break;
                     case 'PREFIX':
                         qso.prefixACLog = elem.elements[0].text;
-                        break;  
+                        break;
                     case 'TIMEOFF':
                         qso.time_off = elem.elements[0].text;
                         break;
-                     case 'FLDOPERATOR':
+                    case 'FLDOPERATOR':
                         qso.operator = elem.elements[0].text;
                         break;
                     case 'FLDQSLR':
@@ -116,9 +126,9 @@ export class ParseAcLog {
                         break;
                     case 'FLDQSLS':
                         qso.qsl_sent = elem.elements[0].text;
-                        break;                         
+                        break;
                     default:
-                        //console.log("Field: " + elem.name + " Not used");    
+                    //console.log("Field: " + elem.name + " Not used");    
 
                 }
             }
@@ -126,14 +136,5 @@ export class ParseAcLog {
 
         return qso;
     }
-    public fixCmdOptTag(acXml: string): string {
 
-        let cmd = acXml.replace('<CMD><', "");
-        let loc = cmd.indexOf('>');
-        let rc = cmd.substr(0, loc);
-        let oldstr = "<" + rc + ">";
-        let newstr = "<" + rc + "/>";
-        this.xml = acXml.replace(oldstr, newstr);
-        return rc;
-    }
 }

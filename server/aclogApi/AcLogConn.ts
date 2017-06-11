@@ -4,7 +4,7 @@ import { ParseAcLog } from "./parseAcLog";
 export class AcLogConn {
     public port: number;
     public host: string;
-    public buffer: string;
+    public buffer: string="";
 
     private numOfDataReads: number = 0;
     private acParse = new ParseAcLog();
@@ -22,7 +22,7 @@ export class AcLogConn {
     }
     public listAllDatabase(callback: (err: string, results: string[]) => any) {
 
-        const list = '<CMD><LIST><INCLUDEALL></CMD>\r\n';
+        const list = '<CMD><LIST><INCLUDEALL><VALUE>2</VALUE></CMD>\r\n';
 
         this.socket.on('data', (data: Buffer) => {
             this.numOfDataReads++;
@@ -31,9 +31,10 @@ export class AcLogConn {
             if (rc) {
                 console.log("Ready to process buffer")
                 this.processBuffer();
+                this.buffer = "";
             }
         });
-        this.buffer = "";
+
         this.numOfDataReads = 0;
         this.socket.write(list);
     }
@@ -45,9 +46,9 @@ export class AcLogConn {
 
         let databuf = data.toString()
         this.buffer = this.buffer + databuf;
-        if (this.buffer.indexOf("\r\n") === -1) 
+        if (this.buffer.indexOf("\r\n") === -1)
             return false;
-        
+
         return true;
     }
 }
