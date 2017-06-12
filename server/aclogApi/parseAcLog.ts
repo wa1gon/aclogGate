@@ -1,6 +1,7 @@
 let convert = require("xml-js");
 import { Qso } from "../logGateModels/qso";
 import { RadioBMF } from "./radioBMF";
+import { LogGateResp } from '../logGateModels/LogGateResp';
 
 
 export class ParseAcLog {
@@ -9,14 +10,16 @@ export class ParseAcLog {
     constructor() { }
 
 
-    public parseResp(cmd: string): any {
-        let respArray = [];
+    public parseResp(cmd: string): Array<LogGateResp> {
+        let respArray : Array<LogGateResp> = [];
         this.fixCmdOptTag(cmd);
         this.xml = "<ROOT>" + this.xml + "</ROOT>"
         let result = convert.xml2js(this.xml, { compact: false, space: 4 });
         for(let cmd of result.elements[0].elements) {
             let rc = this.transform(cmd);
-            respArray.push(rc);
+            let resp = new LogGateResp();
+            resp.responses = rc;
+            respArray.push(resp);
         }
 
         return respArray;
@@ -49,7 +52,6 @@ export class ParseAcLog {
             if (elem.name && elem.type == 'element') {
                 switch (elem.name) {
                     case 'READBMFRESPONSE':
-                        radio.aclogType = elem.name;
                         break;
                     case 'BAND':
                         radio.band = elem.elements[0].text;
@@ -76,7 +78,6 @@ export class ParseAcLog {
             if (elem.name && elem.type == 'element') {
                 switch (elem.name) {
                     case 'LISTRESPONSE':
-                        qso.aclogType = elem.name;
                         break;
                     case 'CALL':
                         qso.call = elem.elements[0].text;

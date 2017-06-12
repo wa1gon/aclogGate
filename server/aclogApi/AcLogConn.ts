@@ -1,5 +1,6 @@
 var net = require('net');
 import { ParseAcLog } from "./parseAcLog";
+import { LogGateResp } from '../logGateModels/LogGateResp';
 
 export class AcLogConn {
     public port: number;
@@ -20,7 +21,7 @@ export class AcLogConn {
             this.isConnected = true;
         });
     }
-    public listAllDatabase(callback: (err: string, results: string[]) => any) {
+    public listAllDatabase(callback: (err: string, results: Array<LogGateResp>) => any) {
 
         const list = '<CMD><LIST><INCLUDEALL><VALUE>2</VALUE></CMD>\r\n';
 
@@ -30,17 +31,19 @@ export class AcLogConn {
             let rc = this.fillBuf(data);
             if (rc) {
                 console.log("Ready to process buffer")
-                this.processBuffer();
+                let qsos = this.processBuffer();
                 this.buffer = "";
+                callback(undefined, qsos);
             }
         });
 
         this.numOfDataReads = 0;
         this.socket.write(list);
     }
-    private processBuffer() {
+    private processBuffer() : Array<LogGateResp> {
         let qsos = this.acParse.parseResp(this.buffer);
         this.buffer = "";
+        return qsos;
     }
     public fillBuf(data: Buffer): boolean {
 
