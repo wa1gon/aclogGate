@@ -11,23 +11,20 @@ export class ParseAcLog {
 
     public parseResp(cmd: string): any {
 
-        let cmdTag = this.fixCmdOptTag(cmd);
-        console.log("cmdTag: " + cmdTag)
+        this.fixCmdOptTag(cmd);
         let result = convert.xml2js(this.xml, { compact: false, space: 4 });
         let rc = this.transform(result);
-
         return rc;
-
     }
-    private fixCmdOptTag(acXml: string): string {
+    private fixCmdOptTag(acXml: string): void {
+        let cmdMatchs = acXml.match(/\<CMD\>\<*[A-Z]*\>/g);
 
-        let cmd = acXml.replace('<CMD><', "");
-        let loc = cmd.indexOf('>');
-        let rc = cmd.substr(0, loc);
-        let oldstr = "<" + rc + ">";
-        let newstr = "<" + rc + "/>";
-        this.xml = acXml.replace(oldstr, newstr);
-        return rc;
+        let cmdSet = new Set(cmdMatchs);
+        for (let cmdTag of cmdSet) {
+            let newCmdTag = cmdTag.replace(/\>$/, "/>");
+            let reg = new RegExp(cmdTag, "g");
+            this.xml = acXml.replace(reg, newCmdTag);
+        }
     }
     public transform(input: any): any {
         let recType = input.elements[0].elements[0].name;
