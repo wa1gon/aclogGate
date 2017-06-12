@@ -10,11 +10,16 @@ export class ParseAcLog {
 
 
     public parseResp(cmd: string): any {
-
+        let respArray = [];
         this.fixCmdOptTag(cmd);
+        this.xml = "<ROOT>" + this.xml + "</ROOT>"
         let result = convert.xml2js(this.xml, { compact: false, space: 4 });
-        let rc = this.transform(result);
-        return rc;
+        for(let cmd of result.elements[0].elements) {
+            let rc = this.transform(cmd);
+            respArray.push(rc);
+        }
+
+        return respArray;
     }
     private fixCmdOptTag(acXml: string): void {
         let cmdMatchs = acXml.match(/\<CMD\>\<*[A-Z]*\>/g);
@@ -27,7 +32,7 @@ export class ParseAcLog {
         }
     }
     public transform(input: any): any {
-        let recType = input.elements[0].elements[0].name;
+        let recType = input.elements[0].name;
 
         switch (recType) {
             case 'LISTRESPONSE':
@@ -67,7 +72,7 @@ export class ParseAcLog {
     }
     public transformListResponse(input): Qso {
         let qso = new Qso();
-        for (let elem of input.elements[0].elements) {
+        for (let elem of input.elements) {
             if (elem.name && elem.type == 'element') {
                 switch (elem.name) {
                     case 'LISTRESPONSE':
