@@ -1,3 +1,4 @@
+var fs = require("fs");
 let convert = require("xml-js");
 import { Qso } from "../logGateModels/qso";
 import { RadioBMF } from "./radioBMF";
@@ -11,11 +12,19 @@ export class ParseAcLog {
 
 
     public parseResp(cmd: string): Array<LogGateResp> {
-        let respArray : Array<LogGateResp> = [];
+        let respArray: Array<LogGateResp> = [];
+        cmd = this.fixAmpSign(cmd);
         this.fixCmdOptTag(cmd);
+
         this.xml = "<ROOT>" + this.xml + "</ROOT>"
+        //console.log(this.xml);
+        fs.writeFileSync("qso.xml", this.xml, (err) => {
+            console.log("write error: " + err);
+        });
         let result = convert.xml2js(this.xml, { compact: false, space: 4 });
-        for(let cmd of result.elements[0].elements) {
+
+
+        for (let cmd of result.elements[0].elements) {
             let rc = this.transform(cmd);
             let resp = new LogGateResp();
             resp.responses = rc;
@@ -23,6 +32,10 @@ export class ParseAcLog {
         }
 
         return respArray;
+    }
+    private fixAmpSign(str: string): string {
+        str = str.replace(/\&/g, '&amp;');
+        return str;
     }
     private fixCmdOptTag(acXml: string): void {
         let cmdMatchs = acXml.match(/\<CMD\>\<*[A-Z]*\>/g);

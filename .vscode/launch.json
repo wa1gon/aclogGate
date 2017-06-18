@@ -10,7 +10,7 @@
             "request": "launch",
             "name": "Launch Node",
             "protocol":"auto",
-            "program": "${workspaceRoot}/server/build/main.js",
+            "program": "${workspaceRoot}/server/build/app.js",
             "sourceMaps": true,
             "outFiles": [
                 "${workspaceRoot}/server/build/**/*.js"

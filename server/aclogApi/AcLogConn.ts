@@ -10,7 +10,7 @@ export class AcLogConn {
     private numOfDataReads: number = 0;
     private acParse = new ParseAcLog();
     private isConnected = false;
-    private readonly list: string = '<CMD><LIST><INCLUDEALL></CMD>\r\n';
+    //private readonly list: string = '<CMD><LIST><INCLUDEALL></CMD>\r\n';
     private socket = new net.Socket();
 
     public open() {
@@ -23,14 +23,13 @@ export class AcLogConn {
     }
     public listAllDatabase(callback: (err: string, results: Array<LogGateResp>) => any) {
 
-        const list = '<CMD><LIST><INCLUDEALL><VALUE>2</VALUE></CMD>\r\n';
-
+         const list = '<CMD><LIST><INCLUDEALL><VALUE>1050</VALUE></CMD>\r\n';
+        // const list = '<CMD><LIST><INCLUDEALL><VALUE>2049</VALUE></CMD>\r\n';
+        console.log(list)
         this.socket.on('data', (data: Buffer) => {
             this.numOfDataReads++;
-            console.log("Data Reads: " + this.numOfDataReads)
             let rc = this.fillBuf(data);
             if (rc) {
-                console.log("Ready to process buffer")
                 let qsos = this.processBuffer();
                 this.buffer = "";
                 callback(undefined, qsos);
@@ -38,6 +37,7 @@ export class AcLogConn {
         });
 
         this.numOfDataReads = 0;
+        console.log("sending ACLog command: " + list);
         this.socket.write(list);
     }
     private processBuffer() : Array<LogGateResp> {
