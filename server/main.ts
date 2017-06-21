@@ -39,6 +39,7 @@ app.route("/loggate/v1")
       res.send("welcome to loggate!");  
     })
     .get((req, res) => {
+
         console.log("in get loggate/v1");
         let responseJson = { hello: "this is my api" };
         // acConn.listAllDatabase((err: string, result: Array<LogGateResp>) => {
