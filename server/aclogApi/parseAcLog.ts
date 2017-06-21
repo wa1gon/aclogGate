@@ -12,8 +12,15 @@ export class ParseAcLog {
 
 
     public parseResp(cmd: string): Array<LogGateResp> {
+    
+        fs.writeFileSync("qsoraw.xml", cmd, (err) => {
+            console.log("write error: " + err);
+        });
         let respArray: Array<LogGateResp> = [];
+        cmd = this.addCRLF(cmd);
         cmd = this.fixAmpSign(cmd);
+        cmd = this.fix1010(cmd);
+
         this.fixCmdOptTag(cmd);
 
         this.xml = "<ROOT>" + this.xml + "</ROOT>"
@@ -21,22 +28,25 @@ export class ParseAcLog {
         fs.writeFileSync("qso.xml", this.xml, (err) => {
             console.log("write error: " + err);
         });
-        let result = convert.xml2js(this.xml, { compact: false, space: 4 });
+
+        try {
+            let result = convert.xml2js(this.xml, { compact: false, space: 4 });
 
 
-        for (let cmd of result.elements[0].elements) {
-            let rc = this.transform(cmd);
-            let resp = new LogGateResp();
-            resp.responses = rc;
-            respArray.push(resp);
-        }
+            for (let cmd of result.elements[0].elements) {
+                let rc = this.transform(cmd);
+                let resp = new LogGateResp();
+                resp.responses = rc;
+                respArray.push(resp);
+            }
+        } catch (err) {
+            console.log("Exception: ");
+            console.log(err);
+        }    
 
         return respArray;
     }
-    private fixAmpSign(str: string): string {
-        str = str.replace(/\&/g, '&amp;');
-        return str;
-    }
+
     private fixCmdOptTag(acXml: string): void {
         let cmdMatchs = acXml.match(/\<CMD\>\<*[A-Z]*\>/g);
 
@@ -47,6 +57,19 @@ export class ParseAcLog {
             this.xml = acXml.replace(reg, newCmdTag);
         }
     }
+    private fixAmpSign(str: string): string {
+        str = str.replace(/\&/g, '&amp;');
+        return str;
+    }
+        private fix1010(str: string): string {
+        str = str.replace(/1010\>/g, 'tenten>');
+        return str;
+    }
+    private addCRLF(str: string): string {
+        let newCmd = str.replace(/\<CMD\>/g, "\r\n<CMD>");
+        return newCmd;
+    }
+
     public transform(input: any): any {
         let recType = input.elements[0].name;
 

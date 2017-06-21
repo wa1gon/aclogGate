@@ -5,13 +5,14 @@ import { LogGateResp } from '../logGateModels/LogGateResp';
 export class AcLogConn {
     public port: number;
     public host: string;
-    public buffer: string="";
+    public buffer: string = "";
 
     private numOfDataReads: number = 0;
     private acParse = new ParseAcLog();
     private isConnected = false;
     //private readonly list: string = '<CMD><LIST><INCLUDEALL></CMD>\r\n';
     private socket = new net.Socket();
+    private dataFullCallback: any;
 
     public open() {
         if (this.isConnected) return;
@@ -19,28 +20,39 @@ export class AcLogConn {
 
         this.socket.connect(this.port, this.host, () => {
             this.isConnected = true;
+
         });
     }
-    public listAllDatabase(callback: (err: string, results: Array<LogGateResp>) => any) {
+    public listAllDatabase(count:number,callback: (err: string, results: Array<LogGateResp>) => any) {
 
-         const list = '<CMD><LIST><INCLUDEALL><VALUE>1050</VALUE></CMD>\r\n';
-        // const list = '<CMD><LIST><INCLUDEALL><VALUE>2049</VALUE></CMD>\r\n';
+        let list: string;
+        if (count)
+            list = `<CMD><LIST><INCLUDEALL><VALUE>${count}</VALUE></CMD>\r\n`;
+        else
+            list = '<CMD><LIST><INCLUDEALL></CMD>\r\n';
+
         console.log(list)
+        this.dataFullCallback = callback;
         this.socket.on('data', (data: Buffer) => {
             this.numOfDataReads++;
             let rc = this.fillBuf(data);
             if (rc) {
-                let qsos = this.processBuffer();
-                this.buffer = "";
-                callback(undefined, qsos);
+                console.log("found end at: " + this.buffer.length)
             }
         });
 
         this.numOfDataReads = 0;
         console.log("sending ACLog command: " + list);
         this.socket.write(list);
+        this.socket.setTimeout(3000);
+        this.socket.on('timeout', () => {
+            console.log("in timeout: buffer length: " + this.buffer.length);
+            let qsos = this.processBuffer();
+            this.buffer = "";
+            this.dataFullCallback(undefined, qsos);
+        });
     }
-    private processBuffer() : Array<LogGateResp> {
+    private processBuffer(): Array<LogGateResp> {
         let qsos = this.acParse.parseResp(this.buffer);
         this.buffer = "";
         return qsos;
