@@ -24,9 +24,10 @@ app.listen(port, function () {
     console.log('Gulp is running my app on  PORT: ' + port);
 });
 
-logRouter.get("/loggate/v1/listall", ((req, res) => {
+logRouter.get("/loggate/v1/listall", function(req, res) {
     let countStr = req.param('count');
     let count: number;
+
     if (!countStr) {
         count = null;
     } else {
@@ -35,11 +36,10 @@ logRouter.get("/loggate/v1/listall", ((req, res) => {
     }
     acConn.listAllDatabase(count, (err: string, result: Array<LogGateResp>) => {
         console.log("got list all data resp")
-        res.json(result);
-        console.log("after sending results");
-        return;
+         return res.json(result).end();
     });
-})
+   
+}
 
 );
 app.use('/', logRouter);

@@ -12,7 +12,7 @@ export class ParseAcLog {
 
 
     public parseResp(cmd: string): Array<LogGateResp> {
-    
+
         fs.writeFileSync("qsoraw.xml", cmd, (err) => {
             console.log("write error: " + err);
         });
@@ -42,7 +42,7 @@ export class ParseAcLog {
         } catch (err) {
             console.log("Exception: ");
             console.log(err);
-        }    
+        }
 
         return respArray;
     }
@@ -61,7 +61,7 @@ export class ParseAcLog {
         str = str.replace(/\&/g, '&amp;');
         return str;
     }
-        private fix1010(str: string): string {
+    private fix1010(str: string): string {
         str = str.replace(/1010\>/g, 'tenten>');
         return str;
     }

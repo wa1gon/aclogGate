@@ -23,7 +23,7 @@ export class AcLogConn {
 
         });
     }
-    public listAllDatabase(count:number,callback: (err: string, results: Array<LogGateResp>) => any) {
+    public listAllDatabase(count: number, callback: (err: string, results: Array<LogGateResp>) => any) {
 
         let list: string;
         if (count)
@@ -38,18 +38,20 @@ export class AcLogConn {
             let rc = this.fillBuf(data);
             if (rc) {
                 console.log("found end at: " + this.buffer.length)
+                let qsos = this.processBuffer();
+                this.buffer = "";
+                this.dataFullCallback(undefined, qsos);
             }
         });
 
         this.numOfDataReads = 0;
-        console.log("sending ACLog command: " + list);
+
         this.socket.write(list);
-        this.socket.setTimeout(3000);
+        this.socket.setTimeout(30000);
         this.socket.on('timeout', () => {
             console.log("in timeout: buffer length: " + this.buffer.length);
-            let qsos = this.processBuffer();
             this.buffer = "";
-            this.dataFullCallback(undefined, qsos);
+            this.dataFullCallback(undefined, []);
         });
     }
     private processBuffer(): Array<LogGateResp> {
