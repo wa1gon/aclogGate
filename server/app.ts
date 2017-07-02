@@ -1,3 +1,4 @@
+#!/bin/env node
 import { AcLogConn } from './aclogApi/AcLogConn';
 import { LogGateResp } from './logGateModels/LogGateResp';
 
@@ -38,7 +39,6 @@ logRouter.get("/loggate/v1/listall", function(req, res) {
     acConn.listAllDatabase(count, (err: string, result: Array<LogGateResp>) => {
         console.log("got list all data resp")
         res.json(result);
-        res = undefined;
         
         console.log("after sending results");
         return;
