@@ -11,7 +11,6 @@ export class AcLogConn {
     private numOfDataReads: number = 0;
     private acParse = new ParseAcLog();
     private isConnected = false;
-    //private readonly list: string = '<CMD><LIST><INCLUDEALL></CMD>\r\n';
     private socket = new net.Socket();
 
 
@@ -33,22 +32,18 @@ export class AcLogConn {
         else
             list = '<CMD><LIST><INCLUDEALL></CMD>\r\n';
 
-        console.log(list)
         this.open();
 
         this.socket.on('data', (data: Buffer) => {
             this.numOfDataReads++;
             let rc = this.fillBuf(data);
             if (rc) {
-
-                console.log("found end at: " + this.buffer.length);
                 let qsos = this.processBuffer();
                 this.buffer = "";
-                //res.writeHead(200, { 'Content-type': 'application/json' });
-                res.json(qsos);
-                //res.end();
-                //res.json(JSON.stringify(qsos));
-                //listAllDatabaseCB(undefined, qsos);
+                res.writeHead(200, { 'Content-type': 'application/json' });
+                res.write(JSON.stringify(qsos));
+                res.end();
+
             }
         });
 

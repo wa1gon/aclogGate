@@ -8,14 +8,17 @@ import { LogGateResp } from '../logGateModels/LogGateResp';
 export class ParseAcLog {
 
     public xml: string;
+    public debug: boolean = false;
     constructor() { }
 
 
     public parseResp(cmd: string): Array<LogGateResp> {
 
-        fs.writeFileSync("qsoraw.xml", cmd, (err) => {
-            console.log("write error: " + err);
-        });
+        if (this.debug) {
+            fs.writeFileSync("qsoraw.xml", cmd, (err) => {
+                console.log("write error: " + err);
+            });
+        }
         let respArray: Array<LogGateResp> = [];
         cmd = this.addCRLF(cmd);
         cmd = this.fixAmpSign(cmd);
@@ -24,14 +27,14 @@ export class ParseAcLog {
         this.fixCmdOptTag(cmd);
 
         this.xml = "<ROOT>" + this.xml + "</ROOT>"
-        //console.log(this.xml);
-        fs.writeFileSync("qso.xml", this.xml, (err) => {
-            console.log("write error: " + err);
-        });
+        if (this.debug) {
+            fs.writeFileSync("qso.xml", this.xml, (err) => {
+                console.log("write error: " + err);
+            });
+        }
 
         try {
             let result = convert.xml2js(this.xml, { compact: false, space: 4 });
-
 
             for (let cmd of result.elements[0].elements) {
                 let rc = this.transform(cmd);
@@ -167,7 +170,7 @@ export class ParseAcLog {
                         qso.qsl_sent = elem.elements[0].text;
                         break;
                     default:
-                    //console.log("Field: " + elem.name + " Not used");    
+                        console.log("Field: " + elem.name + " Not used");
 
                 }
             }
