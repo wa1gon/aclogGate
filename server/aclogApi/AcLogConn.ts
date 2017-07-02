@@ -15,7 +15,7 @@ export class AcLogConn {
     public open() {
         if (this.isConnected) return;
         if (!this.port) throw new Error("connection port is define");
-
+        console.log("port: %d host: %s", this.port, this.host);
         this.socket.connect(this.port, this.host, () => {
             this.isConnected = true;
         });
@@ -37,7 +37,7 @@ export class AcLogConn {
             let rc = this.fillBuf(data);
             if (rc) {
                 let qsos = this.processBuffer();
-                this.buffer = "";
+
                 res.writeHead(200, { 'Content-type': 'application/json' });
                 res.write(JSON.stringify(qsos));
                 res.end();
@@ -46,7 +46,7 @@ export class AcLogConn {
         });
 
         this.numOfDataReads = 0;
-
+        this.buffer = "";
         this.socket.write(list, (err) => {
             this.socket.end();
             this.isConnected = false;

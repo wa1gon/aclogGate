@@ -9,12 +9,12 @@ const querystring = require('querystring');
 export class HttpServer {
     private readonly listAllPath = "/loggate/v1/listall";
 
-    private port: number;
-    private hostname: string;
+    private httpPort: number;
+    private httpHostName: string;
 
     constructor(p: number = 3000, h: string = "localhost") {
-        this.port = p;
-        this.hostname = h;
+        this.httpPort = p;
+        this.httpHostName = h;
     }
 
     public createServer() {
@@ -31,11 +31,14 @@ export class HttpServer {
             }
         });
 
-        server.listen(this.port);
+        server.listen(this.httpPort);
     }
 
     private listDataBase(limit: number, req, res) {
         let acConn: AcLogConn = new AcLogConn();
+        acConn.port = 1100;
+        acConn.host = "192.168.1.101";
+        console.log("port: %d host: %s", this.httpPort, this.httpHostName);
         acConn.listAllDatabase(limit, req, res);
     }
 }
