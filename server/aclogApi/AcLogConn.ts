@@ -1,4 +1,5 @@
 var net = require('net');
+var express = require('express');
 import { ParseAcLog } from "./parseAcLog";
 import { LogGateResp } from '../logGateModels/LogGateResp';
 
@@ -23,7 +24,7 @@ export class AcLogConn {
         });
     }
 
-    public listAllDatabase(count: number, listAllDatabaseCB: (err: string, results: Array<LogGateResp>) => any) {
+    public listAllDatabase(count: number, req, res) {
 
 
         let list: string;
@@ -43,7 +44,11 @@ export class AcLogConn {
                 console.log("found end at: " + this.buffer.length);
                 let qsos = this.processBuffer();
                 this.buffer = "";
-                listAllDatabaseCB(undefined, qsos);
+                //res.writeHead(200, { 'Content-type': 'application/json' });
+                res.json(qsos);
+                //res.end();
+                //res.json(JSON.stringify(qsos));
+                //listAllDatabaseCB(undefined, qsos);
             }
         });
 
@@ -53,7 +58,6 @@ export class AcLogConn {
             this.socket.end();
             this.isConnected = false;
         });
-
     }
     private processBuffer(): Array<LogGateResp> {
         let qsos = this.acParse.parseResp(this.buffer);

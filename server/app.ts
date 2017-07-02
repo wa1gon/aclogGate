@@ -36,13 +36,7 @@ logRouter.get("/loggate/v1/listall", function(req, res) {
         if (count == NaN) count = null;
     }
     // res.json( [count]);
-    acConn.listAllDatabase(count, (err: string, result: Array<LogGateResp>) => {
-        console.log("got list all data resp")
-        res.json(result);
-        
-        console.log("after sending results");
-        return;
-    });
+    acConn.listAllDatabase(count, req, res);
    
 }
 
