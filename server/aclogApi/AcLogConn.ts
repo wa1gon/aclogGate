@@ -12,8 +12,6 @@ export class AcLogConn {
     private acParse = new ParseAcLog();
     private isConnected = false;
     private socket = new net.Socket();
-
-
     public open() {
         if (this.isConnected) return;
         if (!this.port) throw new Error("connection port is define");

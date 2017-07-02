@@ -35,12 +35,7 @@ export class HttpServer {
     }
 
     private listDataBase(limit: number, req, res) {
-
-        let count: number;
         let acConn: AcLogConn = new AcLogConn();
-        acConn.port = 1100;
-        acConn.host = "192.168.1.101";
-
         acConn.listAllDatabase(limit, req, res);
     }
 }
