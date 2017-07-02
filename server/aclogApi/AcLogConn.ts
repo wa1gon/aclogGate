@@ -20,14 +20,11 @@ export class AcLogConn {
 
         this.socket.connect(this.port, this.host, () => {
             this.isConnected = true;
-
         });
     }
-<<<<<<< Updated upstream
-    public listAllDatabase(count: number, callback: (err: string, results: Array<LogGateResp>) => any) {
-=======
+
     public listAllDatabase(count: number, listAllDatabaseCB: (err: string, results: Array<LogGateResp>) => any) {
->>>>>>> Stashed changes
+
 
         let list: string;
         if (count)
@@ -36,38 +33,27 @@ export class AcLogConn {
             list = '<CMD><LIST><INCLUDEALL></CMD>\r\n';
 
         console.log(list)
+        this.open();
 
         this.socket.on('data', (data: Buffer) => {
             this.numOfDataReads++;
             let rc = this.fillBuf(data);
             if (rc) {
-<<<<<<< Updated upstream
-                console.log("found end at: " + this.buffer.length)
-                let qsos = this.processBuffer();
-                this.buffer = "";
-                this.dataFullCallback(undefined, qsos);
-=======
+
                 console.log("found end at: " + this.buffer.length);
                 let qsos = this.processBuffer();
                 this.buffer = "";
                 listAllDatabaseCB(undefined, qsos);
->>>>>>> Stashed changes
             }
         });
 
         this.numOfDataReads = 0;
 
-        this.socket.write(list);
-        this.socket.setTimeout(30000);
-        this.socket.on('timeout', () => {
-            console.log("in timeout: buffer length: " + this.buffer.length);
-            this.buffer = "";
-<<<<<<< Updated upstream
-            this.dataFullCallback(undefined, []);
-=======
-            listAllDatabaseCB(undefined, qsos);
->>>>>>> Stashed changes
+        this.socket.write(list, (err) => {
+            this.socket.end();
+            this.isConnected = false;
         });
+
     }
     private processBuffer(): Array<LogGateResp> {
         let qsos = this.acParse.parseResp(this.buffer);
