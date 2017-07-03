@@ -170,7 +170,7 @@ export class ParseAcLog {
                         qso.qsl_sent = elem.elements[0].text;
                         break;
                     default:
-                        console.log("Field: " + elem.name + " Not used");
+                        // console.log("Field: " + elem.name + " Not used");
 
                 }
             }

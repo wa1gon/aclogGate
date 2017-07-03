@@ -23,6 +23,7 @@ export class HttpServer {
 
             switch (q.pathname) {
                 case this.listAllPath:
+                    console.log("got request")    
                     let qObj = querystring.parse(q.query);
 
                     let count: number = Number.parseInt(qObj.count);

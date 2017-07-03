@@ -15,7 +15,7 @@ export class AcLogConn {
     public open() {
         if (this.isConnected) return;
         if (!this.port) throw new Error("connection port is define");
-        console.log("port: %d host: %s", this.port, this.host);
+        console.log("opening acport: %d host: %s", this.port, this.host);
         this.socket.connect(this.port, this.host, () => {
             this.isConnected = true;
         });
@@ -34,21 +34,30 @@ export class AcLogConn {
 
         this.socket.on('data', (data: Buffer) => {
             this.numOfDataReads++;
+            console.log("got data callback reads: %d", this.numOfDataReads);
             let rc = this.fillBuf(data);
             if (rc) {
-                let qsos = this.processBuffer();
 
-                res.writeHead(200, { 'Content-type': 'application/json' });
-                res.write(JSON.stringify(qsos));
-                res.end();
-
+                console.log("found end string");
             }
+        });
+
+        this.socket.on('end', () => {
+            console.log("end of data");
+            let qsos = this.processBuffer();
+            console.log("start of response");
+
+            res.writeHead(200, { 'Content-type': 'application/json' });
+            res.write(JSON.stringify(qsos));
+            res.end();
         });
 
         this.numOfDataReads = 0;
         this.buffer = "";
+        console.log("writting to aclog");
         this.socket.write(list, (err) => {
             this.socket.end();
+            console.log("socket ended aclog");
             this.isConnected = false;
         });
     }
@@ -60,7 +69,7 @@ export class AcLogConn {
     public fillBuf(data: Buffer): boolean {
 
         let databuf = data.toString()
-        this.buffer = this.buffer + databuf;
+        this.buffer += databuf;
         if (this.buffer.indexOf("\r\n") === -1)
             return false;
 
